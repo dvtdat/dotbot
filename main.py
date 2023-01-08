@@ -41,6 +41,15 @@ async def on_message(message):
     if message.content.startswith("da. god"):
         await message.channel.send("toi qua' gae")
 
+    if message.content.startswith("bot oi"):
+        await message.channel.send("j")
+
+    if message.content.startswith("bun`"):
+        await message.channel.send("vui len di")
+
+    if message.content.startswith("vui kieu j"):
+        await message.channel.send("suc cac")
+
     if message.content.startswith(".dict integrity"):
         word = getWord()
         await message.channel.send(word)
