@@ -2,6 +2,7 @@ import discord
 import os
 import requests
 import json
+import re
 from dotenv import load_dotenv  # pip install python-dotenv, required to load TOKEN from .env
 
 load_dotenv()
@@ -32,26 +33,13 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith(".hello"):
-        await message.channel.send("lo con cac")
-
-    if message.content.startswith(".goodbye"):
-        await message.channel.send("khong ai nhan tin nen di ngu? chu' j 🙄")
-
-    if message.content.startswith("da. god"):
-        await message.channel.send("toi qua' gae")
-
-    if message.content.startswith("bot oi"):
-        await message.channel.send("j")
-
-    if message.content.startswith("bun`"):
-        await message.channel.send("vui len di")
-
-    if message.content.startswith("vui kieu j"):
-        await message.channel.send("suc cac")
-
-    if message.content.startswith(".dict integrity"):
-        word = getWord()
-        await message.channel.send(word)
-
+    messageContent = message.content.lower()
+    
+    if (re.search(r"^(dot) (\w+)", messageContent)):
+        userRequest = re.findall(r"^(dot) (\w+)", messageContent)[0][1]        
+        if (userRequest == "hello" or userRequest == "hi"):
+            await message.channel.send("lo lo cai dit con me may")
+        if (userRequest == "bye" or userRequest == "goodbye"):
+            await message.channel.send("cut con me m di thg suc vat")
+    
 client.run(TOKEN)
