@@ -5,24 +5,13 @@ import json
 import re
 from dotenv import load_dotenv  # pip install python-dotenv, required to load TOKEN from .env
 
+from dictionary import *
+
 load_dotenv()
 
 TOKEN = os.getenv('TOKEN')
-
+prefix = "dot"
 client = discord.Client(intents=discord.Intents.all())
-
-def getWord():
-    wordInput = "integrity"
-    wordReturn = requests.get("https://api.dictionaryapi.dev/api/v2/entries/en/{}".format(wordInput))
-    jsonData = json.loads(wordReturn.text)
-
-    word = jsonData[0]["word"]
-    wordPhonetic = jsonData[0]["phonetics"]
-    wordMeaning = jsonData[0]["meanings"]
-
-    for result in wordPhonetic:
-        if ("text" in result):
-            return result["text"]
 
 @client.event
 async def on_ready():
@@ -33,13 +22,24 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    messageContent = message.content.lower()
+    messageContentLowercase = message.content.lower()
     
-    if (re.search(r"^(dot) (\w+)", messageContent)):
-        userRequest = re.findall(r"^(dot) (\w+)", messageContent)[0][1]        
+    if (re.search(r"^({}) (\w+)".format(prefix), messageContentLowercase)):
+        userRequest = re.findall(r"^({}) (\w+)".format(prefix), messageContentLowercase)[0][1]
+        
         if (userRequest == "hello" or userRequest == "hi"):
             await message.channel.send("lo lo cai dit con me may")
+        
         if (userRequest == "bye" or userRequest == "goodbye"):
             await message.channel.send("cut con me m di thg suc vat")
+
+        if (userRequest == "dictionary" or userRequest == "dict"):
+            userWord = re.findall(r"^({}) (\w+) (\w+)".format(prefix), messageContentLowercase)[0][2]
+            findWord(userWord)
+
+    if (messageContentLowercase.find("da. god") != -1 or messageContentLowercase.find("dạ god") != -1 ):
+        await message.channel.send("toi qua' gae")
+
+
     
 client.run(TOKEN)
