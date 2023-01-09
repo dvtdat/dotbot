@@ -5,7 +5,7 @@ import json
 import re
 from dotenv import load_dotenv  # pip install python-dotenv, required to load TOKEN from .env
 
-from dictionary import *
+from dict import *
 
 load_dotenv()
 
