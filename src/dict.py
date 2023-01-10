@@ -1,16 +1,32 @@
 import requests
 import json
-# word = jsonData[0]["word"]
-# wordPhonetic = jsonData[0]["phonetics"]
-# wordMeaning = jsonData[0]["meanings"]
+import discord
+from word import *
 
+async def findWord(wordInput, message):
+    jsonRequest = json.loads(requests.get("https://api.dictionaryapi.dev/api/v2/entries/en/{}".format(wordInput)).text)
+    
+    if "title" in jsonRequest:
+        await message.channel.send("Mie-san couldn't find your word :cry:")
+        return
 
-# for result in wordMeaning:
-#     print(result["definitions"][0]["definition"])
-#     for result2 in result["definitions"]:
-#         print(result2["definition"])
+    jsonData = jsonRequest[0]
+    word = Word(jsonData["word"])
 
-def findWord(wordInput):
-    wordReturn = requests.get("https://api.dictionaryapi.dev/api/v2/entries/en/{}".format(wordInput))
-    jsonData = json.loads(wordReturn.text)
-    print(jsonData)
+    for inputPhonetic in jsonData["phonetics"]:
+        if "text" in inputPhonetic:
+            word.addPhonetic(inputPhonetic["text"], ("N/A" if "sourceUrl" not in inputPhonetic else inputPhonetic["sourceUrl"]))
+
+    for inputMeaning in jsonData["meanings"]:
+        for inputDefinition in inputMeaning["definitions"]:
+            word.addMeaning(inputMeaning["partOfSpeech"], inputDefinition["definition"])
+
+    await message.channel.send(word.term)
+    for newWordPhonetic in word.phonetic:
+        newWordPhoneticOutput = newWordPhonetic.text
+        await message.channel.send(newWordPhoneticOutput)
+
+    for newWordMeaning in word.meaning:
+        newWordMeaningOutput = newWordMeaning.POS + " - " + newWordMeaning.definition
+        await message.channel.send(newWordMeaningOutput)
+
