@@ -23,10 +23,8 @@ async def findWord(wordInput, message):
 
     await message.channel.send(word.term)
     for newWordPhonetic in word.phonetic:
-        newWordPhoneticOutput = newWordPhonetic.text
-        await message.channel.send(newWordPhoneticOutput)
+        await message.channel.send(newWordPhonetic.text)
 
     for newWordMeaning in word.meaning:
-        newWordMeaningOutput = newWordMeaning.POS + " - " + newWordMeaning.definition
-        await message.channel.send(newWordMeaningOutput)
+        await message.channel.send(newWordMeaning.POS + " - " + newWordMeaning.definition)
 
